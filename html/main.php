@@ -49,7 +49,10 @@
 								<th class="col-1 text-center"></th>
 							</tr>
 						</thead>
-						<tbody>																				
+						<tbody>	
+							<!--
+
+							-->																			
 						</tbody>
 					</table>							
 				</div>	
