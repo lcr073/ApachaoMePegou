@@ -11,6 +11,7 @@
  *
  {
 	"idusuario":"1",
+	"nomehost":"docker1",
 	"portassh":"5000",
 	"portaweb":"5001"
  }
@@ -61,12 +62,13 @@
 	// Verifica se a porta web ou host ja esta em uso
 	try{
 		// Verifica no banco se existe alguma porta em uso para as selecionadas
-		$stmt = $dbh->prepare("SELECT idhost FROM hosts WHERE porta_ssh = :PORTASSH OR porta_web = :PORTAWEB ");
+		$stmt = $dbh->prepare("SELECT idhost FROM hosts WHERE porta_ssh = :PORTASSH OR porta_web = :PORTAWEB OR nome_host = :NOMEHOST");
 
 		// bindParam ajuda evitar SQLinjection
 		// Vinculando parametros
 		$stmt->bindParam(":PORTASSH",$obj['portassh']);
 		$stmt->bindParam(":PORTAWEB",$obj['portaweb']);
+		$stmt->bindParam(":NOMEHOST",$obj['nomehost']);
 
 		// Realmente realiza a execucao da query
 		$stmt -> execute();
@@ -83,16 +85,17 @@
 		if(count($result) != 0){
 		    // Sai e da erro
 		    http_response_code(403);
-		    exit("Alguma porta ja existe");
+		    exit("Alguma porta / nome de host, ja existe");
 		}		
 	
         else {
 			try{
 				//Prepara para a query
-				$stmt = $dbh->prepare("INSERT INTO hosts (porta_ssh, porta_web, idusuario) VALUES (:PORTASSH,:PORTAWEB, :ID_DONO)");
+				$stmt = $dbh->prepare("INSERT INTO hosts (nome_host, porta_ssh, porta_web, idusuario) VALUES (:NOMEHOST, :PORTASSH,:PORTAWEB, :ID_DONO)");
 				
 				// bindParam ajuda evitar SQLinjection
 				// Vinculando parametros
+				$stmt->bindParam(":NOMEHOST",$obj["nomehost"]);
 				$stmt->bindParam(":PORTASSH",$obj["portassh"]);
 				$stmt->bindParam(":PORTAWEB",$obj["portaweb"]);
 				$stmt->bindParam(":ID_DONO",$obj["idusuario"]);
