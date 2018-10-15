@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="css/style.css">
+		
+		
+		<!-- FontsAwesome -->
+		<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+		
+		
+		<!-- LocalCss -->
+		<link rel="stylesheet" href="css/style2.css"
+
+		
+		
+	</head>
+
+	<body>
+		<h4 id="login_message" style="float: right;"><a href="#" onclick="logOut()">  Logout</a></p></h4>
+		<!-- Definition of the main tabs -->
+		<ul class="nav nav-tabs left-navtab ">
+			<li class="active"><a class="hosts-tab"  data-toggle="tab" href="#hosts">Lista de Hosts</a></li>
+			<li id="user-tab"><a class="user-tab"  data-toggle="tab" href="#user">Gerenciar Conta</a></li>
+		</ul>
+
+		<div class="tab-content right-tabcontent">
+			
+			<div id="hosts" class="tab-pane active hosts-tab" >
+				<div class= "table-css">	
+					<img src="img/logo.png" alt="Logo" class="center-image"> 
+					<table id="table1" class="table ">
+						<thead>
+							<tr>
+								<th class="col-2 text-center">Host</th>
+								<th class="col-4 text-center">Porta</th>
+								<th class="col-5 text-center">Status</th>
+								<th class="col-1 text-center"></th>
+							</tr>
+						</thead>
+						<tbody>																				
+						</tbody>
+					</table>							
+				</div>	
+			</div>
+			
+			
+			<div id="user" class="tab-pane user-tab" >
+				<div style="margin-left:20px;margin-right:20px;">
+						<h3>Selecione o funcionario que você deseja visualizar</h3>
+						<form id="formadmin"  action="#" autocomplete="off">
+							<div class ="row">
+								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+									<div class="form-group">
+										<label class="control-label" for="nome">Funcionario</label>
+										
+											<select class="form-control" id="dropdown">
+												<option></option>
+											</select>
+										
+									</div>
+								</div>
+								
+								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+									<div id="export_div"  class="form-group">
+										<label class="control-label" for="add"></label>
+										
+									</div>
+								</div>
+							</div>
+						</form>
+						
+						<div class= "table-css">
+							
+								<table id="tableadmin" class="table ">
+									<thead>									
+									</thead>
+									<tbody>																			
+									</tbody>
+								</table>
+						</div>
+				</div>
+			</div>
+	</body>
+	
+	<script>
+	
+	//Check session an get user information//
+	$( window ).on( "load", function() {
+		
+		$.ajax({
+				type: "POST",
+				url: "PHP/api/checaUsuario.php",
+				//data: JSON.stringify({username:username,password:password}),
+				//contentType: "application/json",
+				//dataType: "json",
+				complete: function(xhr) {
+					
+					if(xhr.status =="403"){				
+						window.location.href = "login.html";
+						deleteCookie("username");
+						deleteCookie("password");
+						$( "#error_signin h4").hide().text(xhr.responseText).fadeIn();
+							
+					}
+					if(xhr.status =="202"){
+						$( "#login_message").text("Bem vindo,".xhr.responseText);
+					}
+				}
+				
+		});
+	
+	
+	});
+	
+	function getCookie(name) {
+       var dc = document.cookie;
+       var prefix = name + "=";
+       var begin = dc.indexOf("; " + prefix);
+       if (begin == -1) {
+              begin = dc.indexOf(prefix);
+              if (begin != 0) return null;
+       } else
+       begin += 2;
+       var end = document.cookie.indexOf(";", begin);
+       if (end == -1)
+       end = dc.length;
+       return unescape(dc.substring(begin + prefix.length, end));
+	}
+	
+	
+	function deleteCookie(name) {
+		   if (getCookie(name)) {
+				  document.cookie = name + "=" +
+				  "; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+				  //history.go(0);
+		   }
+	}
+	
+	//Logout Function
+	function logOut() {
+		deleteCookie("username");
+		deleteCookie("password");
+		//sessionStorage.removeItem("name");
+		
+		window.location.href = "login.html";
+		return false;
+	}
+	
+	</script>
